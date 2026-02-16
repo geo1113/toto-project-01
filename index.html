@@ -1,14 +1,27 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Hello World</title>
-  <link href='/style.css' rel='stylesheet'>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>꿀팁 저장소</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=YOUR_ADSENSE_CLIENT_ID" crossorigin="anonymous"></script>
 </head>
 <body>
-  <h1>Hello, world!</h1>
-  <button onclick="console.log('hello');">Press me</button>
-  <script defer type="text/javascript" src="/main.js"></script>
+  <div class="container">
+    <nav class="lnb">
+      <h2>전체 꿀팁</h2>
+      <div class="search-wrapper">
+        <input type="search" id="search-input" placeholder="꿀팁 검색...">
+      </div>
+      <ul id="post-list"></ul>
+    </nav>
+    <main id="main-content">
+      <!-- 최신 글이 여기에 로드됩니다. -->
+    </main>
+  </div>
+  <!-- type="module" 속성을 추가하여 이 스크립트가 ES 모듈임을 브라우저에 알립니다. -->
+  <script type="module" src="main.js"></script>
 </body>
 </html>
