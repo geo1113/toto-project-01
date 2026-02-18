@@ -1,4 +1,3 @@
-
 [
   {
     "title": "효과적인 시간 관리 비법",
@@ -9,5 +8,25 @@
     "title": "맛있는 김치찌개 끓이는 법",
     "file": "posts/post2.html",
     "date": "2024-05-24"
+  },
+  {
+    "title": "2026년 AI 기반 KOSPI 200 추천 종목",
+    "file": "posts/post3.html",
+    "date": "2024-05-25"
+  },
+  {
+    "title": "ChatGPT의 2026년 추천 종목",
+    "file": "posts/post3-chatgpt.html",
+    "date": "2024-05-25"
+  },
+  {
+    "title": "Gemini의 2026년 추천 종목",
+    "file": "posts/post3-gemini.html",
+    "date": "2024-05-25"
+  },
+  {
+    "title": "DeepSeek의 2026년 추천 종목",
+    "file": "posts/post3-deepseek.html",
+    "date": "2024-05-25"
   }
 ]
