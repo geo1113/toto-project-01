@@ -39,23 +39,34 @@ class SettingsToolbar extends HTMLElement {
     this.isEnglish = !this.isEnglish;
     const targetLang = this.isEnglish ? 'en' : 'ko';
     
-    // HTML lang 속성 변경 (브라우저 힌트 제공)
+    // HTML lang 속성 변경
     document.documentElement.lang = targetLang;
     
-    // 구글 번역 엔진 제어
+    // 1. 구글 번역 쿠키 설정 (새로고침 시에도 유지되도록)
+    const domain = window.location.hostname;
+    document.cookie = `googtrans=/ko/${targetLang}; path=/`;
+    if (domain !== 'localhost') {
+      document.cookie = `googtrans=/ko/${targetLang}; path=/; domain=.${domain}`;
+    }
+    
+    // 2. 구글 번역 엔진 제어
     const triggerGoogleTranslate = () => {
       const selectEl = document.querySelector('select.goog-te-combo');
       if (selectEl) {
         selectEl.value = targetLang;
         selectEl.dispatchEvent(new Event('change'));
       } else {
-        // 아직 로드되지 않았으면 300ms 후 재시도
-        setTimeout(triggerGoogleTranslate, 300);
+        // 아직 로드되지 않았으면 500ms 후 재시도
+        setTimeout(triggerGoogleTranslate, 500);
       }
     };
 
     triggerGoogleTranslate();
     this.render();
+
+    // 3. 만약 엔진이 로드되지 않은 상태에서 쿠키만 설정된 경우, 
+    // 사용자가 언어를 변경했음을 알리기 위해 새로고침이 필요할 수도 있지만, 
+    // 여기서는 최대한 동적으로 처리합니다.
   }
 
   initTranslate() {

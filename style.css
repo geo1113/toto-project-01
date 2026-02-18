@@ -171,12 +171,14 @@ body {
   transform: translateY(-2px);
 }
 
-/* 구글 번역 위젯 숨기기 - display: none을 사용하지 않음 */
+/* 구글 번역 위젯 숨기기 */
 #google_translate_element {
   position: absolute;
   top: -9999px;
   left: -9999px;
-  visibility: hidden;
+  overflow: hidden;
+  width: 0;
+  height: 0;
 }
 
 .goog-te-banner-frame.skiptranslate {
