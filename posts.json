@@ -28,5 +28,10 @@
     "title": "DeepSeek의 2026년 추천 종목",
     "file": "posts/post3-deepseek.html",
     "date": "2024-05-25"
+  },
+  {
+    "title": "AI 공통 추천 종목",
+    "file": "posts/post3-common.html",
+    "date": "2024-05-25"
   }
 ]
