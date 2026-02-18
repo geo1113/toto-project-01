@@ -6,18 +6,20 @@ class SettingsToolbar extends HTMLElement {
   constructor() {
     super();
     this.isDark = localStorage.getItem('theme') === 'dark';
-    this.isEnglish = document.documentElement.lang === 'en';
+
+    // 쿠키를 확인하여 현재 언어 상태를 설정합니다.
+    const langCookie = document.cookie.split('; ').find(row => row.startsWith('googtrans='));
+    this.isEnglish = !!(langCookie && langCookie.split('=')[1].includes('/en'));
+
+    // HTML lang 속성도 동기화합니다.
+    document.documentElement.lang = this.isEnglish ? 'en' : 'ko';
   }
 
   connectedCallback() {
     this.render();
     this.applyTheme();
-    // 페이지 로드 후 구글 번역 초기화
-    if (document.readyState === 'complete') {
-      this.initTranslate();
-    } else {
-      window.addEventListener('load', () => this.initTranslate());
-    }
+    // 구글 번역 스크립트를 초기화합니다.
+    this.initTranslate();
   }
 
   applyTheme() {
@@ -36,63 +38,44 @@ class SettingsToolbar extends HTMLElement {
   }
 
   toggleLanguage() {
-    this.isEnglish = !this.isEnglish;
-    const targetLang = this.isEnglish ? 'en' : 'ko';
-    
-    // HTML lang 속성 변경
-    document.documentElement.lang = targetLang;
-    
-    // 1. 구글 번역 쿠키 설정 (새로고침 시에도 유지되도록)
-    const domain = window.location.hostname;
-    document.cookie = `googtrans=/ko/${targetLang}; path=/`;
-    if (domain !== 'localhost') {
-      document.cookie = `googtrans=/ko/${targetLang}; path=/; domain=.${domain}`;
-    }
-    
-    // 2. 구글 번역 엔진 제어
-    const triggerGoogleTranslate = () => {
-      const selectEl = document.querySelector('select.goog-te-combo');
-      if (selectEl) {
-        selectEl.value = targetLang;
-        selectEl.dispatchEvent(new Event('change'));
-      } else {
-        // 아직 로드되지 않았으면 500ms 후 재시도
-        setTimeout(triggerGoogleTranslate, 500);
+    if (this.isEnglish) {
+      // 영어 -> 한글로 변경
+      // 쿠키를 만료시켜 제거합니다.
+      const domain = window.location.hostname;
+      document.cookie = 'googtrans=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      if (domain !== 'localhost') {
+        document.cookie = 'googtrans=; path=/; domain=.' + domain + '; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
       }
-    };
+    } else {
+      // 한글 -> 영어로 변경
+      // 쿠키를 설정합니다.
+      document.cookie = `googtrans=/ko/en; path=/`;
+    }
 
-    triggerGoogleTranslate();
-    this.render();
-
-    // 3. 만약 엔진이 로드되지 않은 상태에서 쿠키만 설정된 경우, 
-    // 사용자가 언어를 변경했음을 알리기 위해 새로고침이 필요할 수도 있지만, 
-    // 여기서는 최대한 동적으로 처리합니다.
+    // 페이지를 새로고침하여 번역을 적용합니다.
+    window.location.reload();
   }
 
   initTranslate() {
     // 중복 로드 방지
-    if (window.googleTranslateElementInit) return;
+    if (document.getElementById('google-translate-script')) return;
 
+    // 구글 번역 위젯 초기화 콜백 함수를 정의합니다.
     window.googleTranslateElementInit = () => {
       new google.translate.TranslateElement({
-        pageLanguage: 'ko',
-        includedLanguages: 'ko,en',
+        pageLanguage: 'ko', // 원본 언어
+        includedLanguages: 'en', // 번역할 언어
         layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-        autoDisplay: false
-      }, 'google_translate_element');
+        autoDisplay: false // 위젯 자동 표시 안 함
+      }, 'google_translate_element'); // 위젯을 렌더링할 div의 ID
     };
 
+    // 구글 번역 API 스크립트를 동적으로 추가합니다.
     const script = document.createElement('script');
+    script.id = 'google-translate-script';
     script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
     script.async = true;
     document.body.appendChild(script);
-
-    // 위젯 컨테이너가 없으면 생성
-    if (!document.getElementById('google_translate_element')) {
-      const div = document.createElement('div');
-      div.id = 'google_translate_element';
-      document.body.appendChild(div);
-    }
   }
 
   render() {
