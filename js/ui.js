@@ -143,6 +143,22 @@ export function renderMainContent(html) {
   }
 }
 
+/**
+ * Disqus 댓글창을 현재 포스트에 맞게 리셋합니다.
+ * @param {string} postFile - 현재 표시 중인 포스트 파일명
+ */
+export function resetDisqus(postFile) {
+  if (typeof DISQUS !== 'undefined') {
+    DISQUS.reset({
+      reload: true,
+      config: function () {
+        this.page.identifier = postFile;
+        this.page.url = window.location.origin + window.location.pathname + '?post=' + postFile;
+      }
+    });
+  }
+}
+
 export function showError(message) {
   const el = getMainContentElement();
   if (!el) return;

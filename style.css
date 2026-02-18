@@ -125,6 +125,12 @@ body {
     padding-bottom: 0.5rem;
 }
 
+.disqus-container {
+  padding: 1rem 2rem;
+  background: var(--main-bg);
+  margin-top: 1rem;
+}
+
 /* 설정 툴바 (다크모드, 번역) */
 .settings-toolbar {
   position: fixed;
