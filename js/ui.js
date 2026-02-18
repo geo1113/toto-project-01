@@ -6,20 +6,13 @@ class SettingsToolbar extends HTMLElement {
   constructor() {
     super();
     this.isDark = localStorage.getItem('theme') === 'dark';
-    // 초기 언어 설정 확인
-    const currentLang = document.documentElement.lang || 'ko';
-    this.isEnglish = currentLang === 'en';
+    this.isEnglish = document.documentElement.lang === 'en';
   }
 
   connectedCallback() {
     this.render();
     this.applyTheme();
-    // DOM이 완전히 로드된 후 번역 기능 초기화
-    if (document.readyState === 'complete') {
-      this.initTranslate();
-    } else {
-      window.addEventListener('load', () => this.initTranslate());
-    }
+    this.initTranslate();
   }
 
   applyTheme() {
@@ -42,34 +35,32 @@ class SettingsToolbar extends HTMLElement {
     const lang = this.isEnglish ? 'en' : 'ko';
     document.documentElement.lang = lang;
     
-    // 구글 번역 연동
-    try {
+    // 구글 번역 연동 개선: 위젯이 로드될 때까지 재시도
+    const triggerTranslation = () => {
       const googleCombo = document.querySelector('.goog-te-combo');
       if (googleCombo) {
         googleCombo.value = lang;
         googleCombo.dispatchEvent(new Event('change'));
       } else {
-        console.warn('Google Translate widget not ready yet.');
+        // 위젯이 아직 없으면 500ms 후 다시 시도
+        setTimeout(triggerTranslation, 500);
       }
-    } catch (e) {
-      console.error('Translation toggle failed:', e);
-    }
+    };
+    
+    triggerTranslation();
     this.render();
   }
 
   initTranslate() {
-    // 이미 로드되었는지 확인
     if (window.googleTranslateElementInit) return;
 
     window.googleTranslateElementInit = () => {
-      if (typeof google !== 'undefined' && google.translate) {
-        new google.translate.TranslateElement({
-          pageLanguage: 'ko',
-          includedLanguages: 'ko,en',
-          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-          autoDisplay: false
-        }, 'google_translate_element');
-      }
+      new google.translate.TranslateElement({
+        pageLanguage: 'ko',
+        includedLanguages: 'ko,en',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
     };
 
     const script = document.createElement('script');
@@ -79,17 +70,17 @@ class SettingsToolbar extends HTMLElement {
 
     const div = document.createElement('div');
     div.id = 'google_translate_element';
-    div.style.display = 'none';
+    div.style.display = 'none'; // 위젯 자체는 숨김
     document.body.appendChild(div);
   }
 
   render() {
     this.innerHTML = `
       <div class="settings-toolbar">
-        <button class="settings-btn" id="theme-toggle" aria-label="Toggle Dark Mode">
+        <button class="settings-btn" id="theme-toggle">
           ${this.isDark ? '☀️ Light' : '🌙 Dark'}
         </button>
-        <button class="settings-btn" id="lang-toggle" aria-label="Toggle Language">
+        <button class="settings-btn" id="lang-toggle">
           ${this.isEnglish ? '🇰🇷 한글' : '🇺🇸 English'}
         </button>
       </div>
@@ -100,17 +91,16 @@ class SettingsToolbar extends HTMLElement {
   }
 }
 
-// 웹 컴포넌트 등록
 if (!customElements.get('settings-toolbar')) {
   customElements.define('settings-toolbar', SettingsToolbar);
 }
 
-// UI 조작을 위한 요소 캐싱 (함수 내에서 호출하도록 변경하여 null 방지)
 const getPostListElement = () => document.getElementById('post-list');
 const getMainContentElement = () => document.getElementById('main-content');
 
 /**
  * 주어진 게시물 배열을 기반으로 LNB 목록을 생성합니다.
+ * 제목 옆에 날짜(yyyy-mm-dd)를 추가합니다.
  */
 export function renderPostList(posts, onLinkClick) {
   const el = getPostListElement();
@@ -121,16 +111,19 @@ export function renderPostList(posts, onLinkClick) {
     const listItem = document.createElement('li');
     const link = document.createElement('a');
     link.href = `?post=${post.file}`;
-    link.textContent = post.title;
+    
+    // 제목과 날짜를 함께 표시
+    link.innerHTML = `
+      <span class="post-title">${post.title}</span>
+      <span class="post-date">${post.date}</span>
+    `;
+    
     link.addEventListener('click', (e) => onLinkClick(e, post.file));
     listItem.appendChild(link);
     el.appendChild(listItem);
   });
 }
 
-/**
- * HTML 문자열에서 <article> 부분만 추출하여 메인 콘텐츠 영역에 표시합니다.
- */
 export function renderMainContent(html) {
   const el = getMainContentElement();
   if (!el) return;
@@ -147,9 +140,6 @@ export function renderMainContent(html) {
   }
 }
 
-/**
- * 메인 콘텐츠 영역에 에러 메시지를 표시합니다.
- */
 export function showError(message) {
   const el = getMainContentElement();
   if (!el) return;

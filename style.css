@@ -86,16 +86,31 @@ body {
 
 #post-list li {
   padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #post-list a {
   color: var(--lnb-text);
   text-decoration: none;
   transition: color 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
 }
 
 #post-list a:hover {
   color: var(--accent-color);
+}
+
+.post-title {
+  flex: 1;
+}
+
+.post-date {
+  font-size: 0.8rem;
+  color: #aaa;
+  white-space: nowrap;
 }
 
 /* 메인 콘텐츠 */
@@ -117,13 +132,13 @@ body {
   right: 1rem;
   display: flex;
   gap: 0.5rem;
-  z-index: 9999; /* 최상단 유지 */
+  z-index: 9999;
 }
 
 .settings-btn {
   background: var(--main-bg);
   color: var(--text-color);
-  border: 2px solid var(--accent-color); /* 테두리 강조 */
+  border: 2px solid var(--accent-color);
   padding: 0.6rem 1rem;
   border-radius: 30px;
   cursor: pointer;
@@ -161,8 +176,8 @@ body {
   }
 
   .lnb {
-    width: 300px;
-    min-width: 300px;
+    width: 350px; /* 날짜 표시를 위해 약간 넓힘 */
+    min-width: 350px;
   }
 
   #main-content {
