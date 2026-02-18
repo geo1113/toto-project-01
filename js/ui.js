@@ -1,72 +1,161 @@
-// 이 모듈은 사용자 인터페이스(UI)를 그리거나 업데이트하는 함수들을 제공합니다.
+/**
+ * 설정 툴바 웹 컴포넌트
+ * 다크 모드 토글과 번역 기능을 제공합니다.
+ */
+class SettingsToolbar extends HTMLElement {
+  constructor() {
+    super();
+    this.isDark = localStorage.getItem('theme') === 'dark';
+    // 초기 언어 설정 확인
+    const currentLang = document.documentElement.lang || 'ko';
+    this.isEnglish = currentLang === 'en';
+  }
 
-// LNB의 게시물 목록(ul) 요소를 가져옵니다. 다른 함수에서 재사용하기 위해 모듈 스코프에 저장합니다.
-const postListElement = document.getElementById('post-list');
-// 메인 콘텐츠 영역(main) 요소를 가져옵니다.
-const mainContentElement = document.getElementById('main-content');
+  connectedCallback() {
+    this.render();
+    this.applyTheme();
+    // DOM이 완전히 로드된 후 번역 기능 초기화
+    if (document.readyState === 'complete') {
+      this.initTranslate();
+    } else {
+      window.addEventListener('load', () => this.initTranslate());
+    }
+  }
+
+  applyTheme() {
+    if (this.isDark) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+    localStorage.setItem('theme', this.isDark ? 'dark' : 'light');
+  }
+
+  toggleTheme() {
+    this.isDark = !this.isDark;
+    this.applyTheme();
+    this.render();
+  }
+
+  toggleLanguage() {
+    this.isEnglish = !this.isEnglish;
+    const lang = this.isEnglish ? 'en' : 'ko';
+    document.documentElement.lang = lang;
+    
+    // 구글 번역 연동
+    try {
+      const googleCombo = document.querySelector('.goog-te-combo');
+      if (googleCombo) {
+        googleCombo.value = lang;
+        googleCombo.dispatchEvent(new Event('change'));
+      } else {
+        console.warn('Google Translate widget not ready yet.');
+      }
+    } catch (e) {
+      console.error('Translation toggle failed:', e);
+    }
+    this.render();
+  }
+
+  initTranslate() {
+    // 이미 로드되었는지 확인
+    if (window.googleTranslateElementInit) return;
+
+    window.googleTranslateElementInit = () => {
+      if (typeof google !== 'undefined' && google.translate) {
+        new google.translate.TranslateElement({
+          pageLanguage: 'ko',
+          includedLanguages: 'ko,en',
+          layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+          autoDisplay: false
+        }, 'google_translate_element');
+      }
+    };
+
+    const script = document.createElement('script');
+    script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    script.async = true;
+    document.body.appendChild(script);
+
+    const div = document.createElement('div');
+    div.id = 'google_translate_element';
+    div.style.display = 'none';
+    document.body.appendChild(div);
+  }
+
+  render() {
+    this.innerHTML = `
+      <div class="settings-toolbar">
+        <button class="settings-btn" id="theme-toggle" aria-label="Toggle Dark Mode">
+          ${this.isDark ? '☀️ Light' : '🌙 Dark'}
+        </button>
+        <button class="settings-btn" id="lang-toggle" aria-label="Toggle Language">
+          ${this.isEnglish ? '🇰🇷 한글' : '🇺🇸 English'}
+        </button>
+      </div>
+    `;
+
+    this.querySelector('#theme-toggle').onclick = () => this.toggleTheme();
+    this.querySelector('#lang-toggle').onclick = () => this.toggleLanguage();
+  }
+}
+
+// 웹 컴포넌트 등록
+if (!customElements.get('settings-toolbar')) {
+  customElements.define('settings-toolbar', SettingsToolbar);
+}
+
+// UI 조작을 위한 요소 캐싱 (함수 내에서 호출하도록 변경하여 null 방지)
+const getPostListElement = () => document.getElementById('post-list');
+const getMainContentElement = () => document.getElementById('main-content');
 
 /**
  * 주어진 게시물 배열을 기반으로 LNB 목록을 생성합니다.
- * @param {Array} posts - 화면에 표시할 게시물 객체 배열
- * @param {function} onLinkClick - 각 목록 링크를 클릭했을 때 실행될 콜백 함수
  */
 export function renderPostList(posts, onLinkClick) {
-  // 기존 목록을 모두 삭제하여 초기화합니다.
-  postListElement.innerHTML = '';
-  // 주어진 posts 배열의 각 항목에 대해 반복 실행합니다.
+  const el = getPostListElement();
+  if (!el) return;
+
+  el.innerHTML = '';
   posts.forEach(post => {
-    // li 요소를 생성합니다.
     const listItem = document.createElement('li');
-    // a(링크) 요소를 생성합니다.
     const link = document.createElement('a');
-    // 링크의 href 속성을 설정합니다. (예: ?post=posts/post1.html)
     link.href = `?post=${post.file}`;
-    // 링크의 텍스트를 게시물 제목으로 설정합니다.
     link.textContent = post.title;
-    // 링크에 클릭 이벤트 리스너를 추가합니다.
     link.addEventListener('click', (e) => onLinkClick(e, post.file));
-    // li 요소의 자식으로 a 요소를 추가합니다.
     listItem.appendChild(link);
-    // ul 요소(postListElement)의 자식으로 li 요소를 추가합니다.
-    postListElement.appendChild(listItem);
+    el.appendChild(listItem);
   });
 }
 
 /**
  * HTML 문자열에서 <article> 부분만 추출하여 메인 콘텐츠 영역에 표시합니다.
- * @param {string} html - 게시물 파일의 전체 HTML 내용
  */
 export function renderMainContent(html) {
-  // 문자열 형태의 HTML을 실제 DOM으로 파싱하기 위한 객체를 생성합니다.
+  const el = getMainContentElement();
+  if (!el) return;
+
   const parser = new DOMParser();
-  // HTML 문자열을 파싱하여 새로운 document 객체를 만듭니다.
   const doc = parser.parseFromString(html, 'text/html');
-  // 파싱된 document에서 <article> 태그를 찾습니다.
   const article = doc.querySelector('article');
 
-  // 메인 콘텐츠 영역의 기존 내용을 모두 지웁니다.
-  mainContentElement.innerHTML = '';
-  
-  // 만약 <article> 태그가 존재한다면,
+  el.innerHTML = '';
   if (article) {
-    // 메인 콘텐츠 영역에 새로 불러온 article 요소를 추가합니다.
-    mainContentElement.appendChild(article);
+    el.appendChild(article);
   } else {
-    // <article> 태그가 없으면 에러 메시지를 표시합니다.
     showError('콘텐츠를 표시할 수 없습니다.');
   }
 }
 
 /**
  * 메인 콘텐츠 영역에 에러 메시지를 표시합니다.
- * @param {string} message - 사용자에게 보여줄 에러 메시지
  */
 export function showError(message) {
-  // 메인 콘텐츠 영역을 초기화합니다.
-  mainContentElement.innerHTML = '';
-  // p 태그를 만들어 에러 메시지를 담습니다.
+  const el = getMainContentElement();
+  if (!el) return;
+
+  el.innerHTML = '';
   const errorMessage = document.createElement('p');
   errorMessage.textContent = message;
-  // 메인 콘텐츠 영역에 에러 메시지를 추가합니다.
-  mainContentElement.appendChild(errorMessage);
+  el.appendChild(errorMessage);
 }

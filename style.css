@@ -1,10 +1,37 @@
+/* 테마 변수 정의 */
+:root {
+  --bg-color: #f4f4f4;
+  --text-color: #333;
+  --lnb-bg: #333;
+  --lnb-text: #fff;
+  --main-bg: #fff;
+  --accent-color: #fca311;
+  --border-color: #555;
+  --input-bg: #444;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* 다크 모드 변수 */
+body.dark-mode {
+  --bg-color: #121212;
+  --text-color: #e0e0e0;
+  --lnb-bg: #000;
+  --lnb-text: #e0e0e0;
+  --main-bg: #1e1e1e;
+  --accent-color: #ffb703;
+  --border-color: #333;
+  --input-bg: #2c2c2c;
+  --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.5);
+}
+
 /* 기본 스타일 및 레이아웃 */
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   line-height: 1.6;
   margin: 0;
-  background-color: #f4f4f4;
-  color: #333;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .container {
@@ -15,16 +42,17 @@ body {
 /* LNB (왼쪽 네비게이션) */
 .lnb {
   width: 100%;
-  background: #333;
-  color: #fff;
+  background: var(--lnb-bg);
+  color: var(--lnb-text);
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  transition: background 0.3s, color 0.3s;
 }
 
 .lnb h2 {
   margin-top: 0;
-  border-bottom: 1px solid #555;
+  border-bottom: 1px solid var(--border-color);
   padding-bottom: 0.5rem;
 }
 
@@ -36,11 +64,11 @@ body {
 #search-input {
   width: 100%;
   padding: 0.5rem;
-  border: 1px solid #555;
+  border: 1px solid var(--border-color);
   border-radius: 5px;
-  background: #444;
-  color: #fff;
-  box-sizing: border-box; /* 패딩과 테두리가 너비에 포함되도록 설정 */
+  background: var(--input-bg);
+  color: var(--lnb-text);
+  box-sizing: border-box;
 }
 
 #search-input::placeholder {
@@ -52,8 +80,8 @@ body {
   list-style: none;
   padding: 0;
   margin: 0;
-  overflow-y: auto; /* 목록이 길어지면 스크롤 생성 */
-  flex-grow: 1; /* 남은 공간을 모두 차지하도록 설정 */
+  overflow-y: auto;
+  flex-grow: 1;
 }
 
 #post-list li {
@@ -61,24 +89,68 @@ body {
 }
 
 #post-list a {
-  color: #fff;
+  color: var(--lnb-text);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 #post-list a:hover {
-  color: #fca311;
+  color: var(--accent-color);
 }
 
 /* 메인 콘텐츠 */
 #main-content {
   padding: 1rem 2rem;
-  background: #fff;
+  background: var(--main-bg);
+  transition: background 0.3s;
 }
 
 #main-content h1 {
-    border-bottom: 2px solid #fca311;
+    border-bottom: 2px solid var(--accent-color);
     padding-bottom: 0.5rem;
+}
+
+/* 설정 툴바 (다크모드, 번역) */
+.settings-toolbar {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  z-index: 9999; /* 최상단 유지 */
+}
+
+.settings-btn {
+  background: var(--main-bg);
+  color: var(--text-color);
+  border: 2px solid var(--accent-color); /* 테두리 강조 */
+  padding: 0.6rem 1rem;
+  border-radius: 30px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  transition: all 0.2s;
+}
+
+.settings-btn:hover {
+  background: var(--accent-color);
+  color: #000;
+  transform: translateY(-2px);
+}
+
+/* 구글 번역 위젯 숨기기 */
+.goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon {
+  display: none !important;
+}
+body {
+  top: 0 !important;
+}
+.goog-te-gadget-simple {
+  display: none !important;
 }
 
 /* 데스크톱 (768px 이상) */
@@ -96,6 +168,6 @@ body {
   #main-content {
     flex: 1;
     padding: 2rem 4rem;
-    overflow-y: auto; /* 본문이 길어지면 스크롤 생성 */
+    overflow-y: auto;
   }
 }
