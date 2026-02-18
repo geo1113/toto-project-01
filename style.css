@@ -157,15 +157,20 @@ body {
   transform: translateY(-2px);
 }
 
-/* 구글 번역 위젯 숨기기 */
-.goog-te-banner-frame.skiptranslate, .goog-te-gadget-icon {
+/* 구글 번역 위젯 숨기기 - display: none을 사용하지 않음 */
+#google_translate_element {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+  visibility: hidden;
+}
+
+.goog-te-banner-frame.skiptranslate {
   display: none !important;
 }
+
 body {
   top: 0 !important;
-}
-.goog-te-gadget-simple {
-  display: none !important;
 }
 
 /* 데스크톱 (768px 이상) */
@@ -176,7 +181,7 @@ body {
   }
 
   .lnb {
-    width: 350px; /* 날짜 표시를 위해 약간 넓힘 */
+    width: 350px;
     min-width: 350px;
   }
 

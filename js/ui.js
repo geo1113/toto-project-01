@@ -12,7 +12,12 @@ class SettingsToolbar extends HTMLElement {
   connectedCallback() {
     this.render();
     this.applyTheme();
-    this.initTranslate();
+    // 페이지 로드 후 구글 번역 초기화
+    if (document.readyState === 'complete') {
+      this.initTranslate();
+    } else {
+      window.addEventListener('load', () => this.initTranslate());
+    }
   }
 
   applyTheme() {
@@ -32,26 +37,29 @@ class SettingsToolbar extends HTMLElement {
 
   toggleLanguage() {
     this.isEnglish = !this.isEnglish;
-    const lang = this.isEnglish ? 'en' : 'ko';
-    document.documentElement.lang = lang;
+    const targetLang = this.isEnglish ? 'en' : 'ko';
     
-    // 구글 번역 연동 개선: 위젯이 로드될 때까지 재시도
-    const triggerTranslation = () => {
-      const googleCombo = document.querySelector('.goog-te-combo');
-      if (googleCombo) {
-        googleCombo.value = lang;
-        googleCombo.dispatchEvent(new Event('change'));
+    // HTML lang 속성 변경 (브라우저 힌트 제공)
+    document.documentElement.lang = targetLang;
+    
+    // 구글 번역 엔진 제어
+    const triggerGoogleTranslate = () => {
+      const selectEl = document.querySelector('select.goog-te-combo');
+      if (selectEl) {
+        selectEl.value = targetLang;
+        selectEl.dispatchEvent(new Event('change'));
       } else {
-        // 위젯이 아직 없으면 500ms 후 다시 시도
-        setTimeout(triggerTranslation, 500);
+        // 아직 로드되지 않았으면 300ms 후 재시도
+        setTimeout(triggerGoogleTranslate, 300);
       }
     };
-    
-    triggerTranslation();
+
+    triggerGoogleTranslate();
     this.render();
   }
 
   initTranslate() {
+    // 중복 로드 방지
     if (window.googleTranslateElementInit) return;
 
     window.googleTranslateElementInit = () => {
@@ -64,14 +72,16 @@ class SettingsToolbar extends HTMLElement {
     };
 
     const script = document.createElement('script');
-    script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
     script.async = true;
     document.body.appendChild(script);
 
-    const div = document.createElement('div');
-    div.id = 'google_translate_element';
-    div.style.display = 'none'; // 위젯 자체는 숨김
-    document.body.appendChild(div);
+    // 위젯 컨테이너가 없으면 생성
+    if (!document.getElementById('google_translate_element')) {
+      const div = document.createElement('div');
+      div.id = 'google_translate_element';
+      document.body.appendChild(div);
+    }
   }
 
   render() {
@@ -98,10 +108,6 @@ if (!customElements.get('settings-toolbar')) {
 const getPostListElement = () => document.getElementById('post-list');
 const getMainContentElement = () => document.getElementById('main-content');
 
-/**
- * 주어진 게시물 배열을 기반으로 LNB 목록을 생성합니다.
- * 제목 옆에 날짜(yyyy-mm-dd)를 추가합니다.
- */
 export function renderPostList(posts, onLinkClick) {
   const el = getPostListElement();
   if (!el) return;
@@ -111,13 +117,10 @@ export function renderPostList(posts, onLinkClick) {
     const listItem = document.createElement('li');
     const link = document.createElement('a');
     link.href = `?post=${post.file}`;
-    
-    // 제목과 날짜를 함께 표시
     link.innerHTML = `
       <span class="post-title">${post.title}</span>
       <span class="post-date">${post.date}</span>
     `;
-    
     link.addEventListener('click', (e) => onLinkClick(e, post.file));
     listItem.appendChild(link);
     el.appendChild(listItem);
