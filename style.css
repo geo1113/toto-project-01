@@ -125,10 +125,18 @@ body {
     padding-bottom: 0.5rem;
 }
 
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .disqus-container {
   padding: 1rem 2rem;
   background: var(--main-bg);
   margin-top: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 /* 설정 툴바 (다크모드, 번역) */
@@ -191,9 +199,16 @@ body {
     min-width: 350px;
   }
 
-  #main-content {
+  .content-wrapper {
     flex: 1;
-    padding: 2rem 4rem;
     overflow-y: auto;
+  }
+
+  #main-content {
+    padding: 2rem 4rem;
+  }
+
+  .disqus-container {
+    padding: 2rem 4rem;
   }
 }
