@@ -168,6 +168,23 @@ body {
   width: 100%;
 }
 
+.main-header {
+    display: flex;
+    justify-content: flex-end;
+    padding: 1rem 2rem;
+    background: var(--main-bg);
+}
+
+#theme-toggle {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+}
+
 .disqus-container {
   padding: 1rem 2rem;
   background: var(--main-bg);
@@ -229,19 +246,6 @@ body.dark-mode tr:nth-child(even) {
 /* --- 한/영 변환기 스타일 --- */
 .converter-container {
   margin-top: 2rem;
-}
-
-.converter-controls {
-  margin-bottom: 1rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.radio-group label {
-  margin-right: 1rem;
-  cursor: pointer;
 }
 
 .text-areas {
