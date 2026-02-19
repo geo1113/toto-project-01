@@ -134,6 +134,12 @@ body {
     border-top: 1px solid rgba(255, 255, 255, 0.05);
 }
 
+/* 하위 포스트 링크 색상 지정 */
+.sub-post-list a,
+.sub-post-list a:visited {
+  color: var(--accent-color);
+}
+
 .post-title {
   flex: 1;
 }
