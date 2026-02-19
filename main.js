@@ -1,6 +1,7 @@
 // 이 파일은 애플리케이션의 메인 진입점(Entry Point)입니다.
 // 각 기능별 모듈을 가져와 전체 애플리케이션의 동작을 조립하고 초기화합니다.
 
+import './js/components/settingsToolbar.js'; // 웹 컴포넌트 등록
 import { getSortedPosts } from './js/api.js';
 import { renderPostList, initSearch } from './js/ui.js';
 import { handleRouting, loadPost, setupPopstateListener } from './js/router.js';

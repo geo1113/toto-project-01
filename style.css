@@ -140,10 +140,10 @@ body {
 }
 
 /* 설정 툴바 (다크모드, 번역) */
-.settings-toolbar {
+settings-toolbar {
   position: fixed;
-  top: 1rem;
-  right: 1rem;
+  top: 1.3rem;
+  left: 1rem; /* 오른쪽에서 왼쪽으로 변경 */
   display: flex;
   gap: 0.5rem;
   z-index: 9999;
@@ -173,12 +173,7 @@ body {
 
 /* 구글 번역 위젯 숨기기 */
 #google_translate_element {
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
-  overflow: hidden;
-  width: 0;
-  height: 0;
+  display: none;
 }
 
 .goog-te-banner-frame.skiptranslate {
@@ -228,19 +223,10 @@ body.dark-mode tr:nth-child(even) {
 
 /* 접속자 수 표시 */
 #visitor-counter {
-  position: fixed;
-  top: 1.3rem;
-  left: 1rem; /* 왼쪽 끝으로 이동 */
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--text-color);
-  background: rgba(128, 128, 128, 0.1);
-  padding: 4px 12px;
-  border-radius: 20px;
-  border: 1px solid var(--accent-color);
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  z-index: 9998; /* 툴바보다 한 단계 아래 */
+  margin-bottom: 1rem; /* 제목과의 간격 */
+  font-weight: bold;
 }
 
 #visitor-counter strong {
@@ -262,6 +248,7 @@ body.dark-mode tr:nth-child(even) {
   .content-wrapper {
     flex: 1;
     overflow-y: auto;
+    padding-top: 4rem; /* 설정 툴바와의 간격 확보 */
   }
 
   #main-content {
