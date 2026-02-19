@@ -157,7 +157,7 @@ body {
   transition: background 0.3s;
 }
 
-#main-content h1 {
+#main-content h1, #main-content h2 {
     border-bottom: 2px solid var(--accent-color);
     padding-bottom: 0.5rem;
 }
@@ -224,6 +224,93 @@ tr:nth-child(even) {
 
 body.dark-mode tr:nth-child(even) {
   background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* --- 한/영 변환기 스타일 --- */
+.converter-container {
+  margin-top: 2rem;
+}
+
+.converter-controls {
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.radio-group label {
+  margin-right: 1rem;
+  cursor: pointer;
+}
+
+.text-areas {
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+.textarea-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+textarea {
+  width: 100%;
+  height: 200px;
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 1rem;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+textarea:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(var(--accent-color), 0.2);
+}
+
+.text-info {
+  text-align: right;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #aaa;
+}
+
+#swap-button {
+  align-self: center;
+  background: var(--accent-color);
+  color: #000;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+#swap-button:hover {
+  transform: scale(1.1) rotate(180deg);
+}
+
+/* 변환기 반응형 */
+@media (max-width: 768px) {
+  .text-areas {
+    flex-direction: column;
+  }
+  #swap-button {
+     margin: 0.5rem auto;
+     transform: rotate(90deg);
+  }
+   #swap-button:hover {
+    transform: scale(1.1) rotate(270deg);
+  }
 }
 
 /* 데스크톱 (768px 이상) */

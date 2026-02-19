@@ -1,34 +1,35 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>효과적인 시간 관리 비법</title>
-</head>
-<body>
-  <article>
-    <h1>효과적인 시간 관리 비법</h1>
-    <p>시간을 효율적으로 사용하는 것은 현대 사회에서 매우 중요합니다. 다음은 시간을 효과적으로 관리하기 위한 몇 가지 비법입니다.</p>
-    <ul>
-      <li><strong>뽀모도로 기법:</strong> 25분 집중하고 5분 휴식하는 사이클을 반복하여 집중력을 유지합니다.</li>
-      <li><strong>아이젠하워 매트릭스:</strong> 긴급성과 중요도에 따라 업무의 우선순위를 정합니다.</li>
-      <li><strong>주간 계획:</strong> 매주 초에 한 주간의 목표와 할 일을 미리 계획합니다.</li>
-    </ul>
-    <p>이러한 방법들을 꾸준히 실천하면 놀라운 변화를 경험할 수 있습니다.</p>
-  </article>
-  <div id="disqus_thread"></div>
-  <script>
-      var disqus_config = function () {
-      this.page.url = window.location.href;
-      this.page.identifier = 'post1.html';
-      };
-      (function() {
-      var d = document, s = d.createElement('script');
-      s.src = 'https://toto-project-01.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-      })();
-  </script>
-  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</body>
-</html>
+<article>
+    <h2>한/영 키보드 변환기</h2>
+    <p>실수로 잘못된 언어로 입력했나요? 괜찮아요. 여기에 붙여넣기만 하면 자동으로 변환해 드립니다.</p>
+
+    <div class="converter-container">
+        <div class="converter-controls">
+            <div class="radio-group">
+                <input type="radio" id="koToEn" name="conversion-direction" value="koToEn" checked>
+                <label for="koToEn">한 → 영</label>
+                <input type="radio" id="enToKo" name="conversion-direction" value="enToKo">
+                <label for="enToKo">영 → 한</label>
+            </div>
+        </div>
+
+        <div class="text-areas">
+            <div class="textarea-wrapper">
+                <textarea id="input-text" placeholder="여기에 텍스트를 입력하거나 붙여넣으세요..."></textarea>
+                <div class="text-info">
+                    <span id="input-bytes">0 Bytes</span>
+                </div>
+            </div>
+
+            <button id="swap-button" title="입력과 결과 바꾸기">↔</button>
+
+            <div class="textarea-wrapper">
+                <textarea id="output-text" readonly placeholder="변환 결과..."></textarea>
+                <div class="text-info">
+                    <span id="output-bytes">0 Bytes</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/converter.js"></script>
+</article>
