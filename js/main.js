@@ -31,16 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
     loadDynamicScript('//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit', 'google-translate-script');
 
     // 3. 게시물 목록 로드 및 LNB 생성
-    fetch('posts.json') // 경로 수정: index.html 기준
+    fetch('posts.json') 
         .then(response => {
             if (!response.ok) throw new Error('posts.json not found');
             return response.json();
         })
         .then(data => {
-            posts = data;
+            posts = data.posts; // 수정: data.posts 배열을 할당
             renderPostList(posts);
-            // 초기 콘텐츠 로드 로직 개선
-            const initialPath = window.location.hash.substring(1) || (posts.length > 0 ? posts[0].path : null);
+            const initialPath = window.location.hash.substring(1) || (posts.length > 0 ? posts[0].file : null);
             if (initialPath) loadContent(initialPath);
         })
         .catch(error => {
@@ -49,12 +48,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
     function renderPostList(postsToRender) {
-        postList.innerHTML = ''; // 목록 초기화
+        postList.innerHTML = ''; 
         postsToRender.forEach(post => {
             const li = document.createElement('li');
             li.innerHTML = `
                 <div class="post-item">
-                    <a href="#${post.path}" data-path="${post.path}" class="post-link">
+                    <a href="#${post.file}" data-path="${post.file}" class="post-link">
                         <span class="post-title">${post.title}</span>
                         <span class="post-date">${post.date}</span>
                     </a>
@@ -67,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 subList.style.display = 'none';
                 post.subPosts.forEach(subPost => {
                     const subLi = document.createElement('li');
-                    subLi.innerHTML = `<a href="#${subPost.path}" data-path="${subPost.path}" class="post-link sub-post-link">${subPost.title}</a>`;
+                    subLi.innerHTML = `<a href="#${subPost.file}" data-path="${subPost.file}" class="post-link sub-post-link">${subPost.title}</a>`;
                     subList.appendChild(subLi);
                 });
                 li.appendChild(subList);
@@ -87,7 +86,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 mainContent.innerHTML = html;
                 if (path.includes('post1.html')) initConverter();
                 
-                // Disqus 리셋
                 if (window.DISQUS) {
                     DISQUS.reset({
                         reload: true,
@@ -114,10 +112,9 @@ document.addEventListener('DOMContentLoaded', () => {
     postList.addEventListener('click', (e) => {
         const link = e.target.closest('.post-link');
         if (link) {
-            // hashchange 이벤트가 모든 것을 처리하므로, 여기서는 기본 동작(페이지 이동)만 막음
             e.preventDefault();
             const path = link.dataset.path;
-            window.location.hash = path; // 해시 변경 -> hashchange 이벤트 트리거
+            window.location.hash = path; 
         }
 
         const toggleBtn = e.target.closest('.toggle-sub-posts');
@@ -134,7 +131,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // 7. 검색
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
-        // 검색 로직은 생략 (기존과 동일)
+        const filteredPosts = posts.filter(post => {
+            const titleMatch = post.title.toLowerCase().includes(searchTerm);
+            const subPostMatch = post.subPosts ? post.subPosts.some(sub => sub.title.toLowerCase().includes(searchTerm)) : false;
+            return titleMatch || subPostMatch;
+        });
+        renderPostList(filteredPosts);
     });
 
     // 8. 테마 토글
