@@ -189,6 +189,60 @@ body {
   top: 0 !important;
 }
 
+/* 테이블 스타일 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  background: var(--main-bg);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--card-shadow);
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  background-color: var(--accent-color);
+  color: #000;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
+tr:nth-child(even) {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+body.dark-mode tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+/* 접속자 수 표시 */
+.visitor-counter {
+  font-size: 0.85rem;
+  color: var(--text-color);
+  background: rgba(128, 128, 128, 0.1);
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid var(--accent-color);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.visitor-counter strong {
+  color: var(--accent-color);
+}
+
 /* 데스크톱 (768px 이상) */
 @media (min-width: 768px) {
   .container {

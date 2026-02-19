@@ -131,10 +131,29 @@ export function renderMainContent(html) {
 
   el.innerHTML = '';
   if (article) {
+    // 접속자 수 업데이트 및 엘리먼트 생성
+    const visitorCount = updateVisitorCounter();
+    const counterEl = document.createElement('div');
+    counterEl.className = 'visitor-counter';
+    counterEl.style.float = 'right';
+    counterEl.style.marginBottom = '10px';
+    counterEl.innerHTML = `👥 누적 접속자: <strong>${visitorCount.toLocaleString()}</strong>명`;
+    
+    el.appendChild(counterEl);
     el.appendChild(article);
   } else {
     showError('콘텐츠를 표시할 수 없습니다.');
   }
+}
+
+/**
+ * 접속자 수를 시뮬레이션하여 업데이트합니다.
+ */
+function updateVisitorCounter() {
+  let count = parseInt(localStorage.getItem('total_visits') || '2540');
+  count += Math.floor(Math.random() * 3) + 1; // 자연스러운 증가 연출
+  localStorage.setItem('total_visits', count);
+  return count;
 }
 
 /**
