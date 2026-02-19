@@ -3,20 +3,44 @@
     {
       "file": "post1.html",
       "title": "분기별 주식 포트폴리오 최적화 전략",
-      "date": "2024-07-20",
-      "published": true
+      "date": "2024-07-25",
+      "published": false
     },
     {
       "file": "post2.html",
       "title": "Gemini가 추천하는 2024년 3분기 주식",
-      "date": "2024-07-22",
-      "published": true
+      "date": "2024-07-25",
+      "published": false
+    },
+    {
+      "file": "post3.html",
+      "title": "Post 3",
+      "date": "2024-07-25",
+      "published": false
     },
     {
       "file": "post3-chatgpt.html",
       "title": "ChatGPT가 추천하는 2024년 3분기 주식",
-      "date": "2024-07-24",
+      "date": "2024-07-25",
       "published": true
+    },
+    {
+      "file": "post3-common.html",
+      "title": "Post 3 - Common",
+      "date": "2024-07-25",
+      "published": true
+    },
+    {
+      "file": "post3-deepseek.html",
+      "title": "Post 3 - Deepseek",
+      "date": "2024-07-25",
+      "published": true
+    },
+    {
+      "file": "post3-gemini.html",
+      "title": "Post 3 - Gemini",
+      "date": "2024-07-25",
+      "published": false
     }
   ]
 }
