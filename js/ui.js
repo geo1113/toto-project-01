@@ -71,7 +71,7 @@ export function displayContent(html) {
   // HTML 문자열을 파싱하여 DOM 요소로 변환합니다.
   const contentEl = parseHTML(html);
   if (contentEl) {
-    mainContent.appendChild(contentEl);
+    updateMainContent(mainContent, contentEl);
   } else {
     showError('콘텐츠를 불러오는 데 실패했습니다.');
   }
@@ -147,9 +147,7 @@ export function updateMainContent(el, article) {
         // 접속자 수 업데이트 및 엘리먼트 생성
         const visitorCount = updateVisitorCounter();
         const counterEl = document.createElement('div');
-        counterEl.id = 'visitor-counter'; // className -> id로 변경
-        // counterEl.style.float = 'right'; // 이 줄을 제거
-        // counterEl.style.marginBottom = '10px'; // 이 줄을 제거
+        counterEl.id = 'visitor-counter';
         counterEl.innerHTML = \`👥 누적 접속자: <strong>${visitorCount.toLocaleString()}</strong>명\`;
         
         el.appendChild(counterEl);

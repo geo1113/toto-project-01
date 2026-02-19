@@ -1,7 +1,7 @@
 // 이 모듈은 URL 변경 감지, 페이지 로딩 처리 등 라우팅 관련 기능을 담당합니다.
 
 import { getPostContent } from './api.js';
-import { renderMainContent, showError, resetDisqus } from './ui.js';
+import { displayContent, showError, loadDisqus } from './ui.js';
 
 /**
  * 특정 게시물을 불러와 화면에 표시하고, 브라우저 히스토리를 관리합니다.
@@ -13,10 +13,10 @@ export async function loadPost(file, addToHistory = true) {
     // api 모듈을 사용해 게시물 HTML 내용을 가져옵니다.
     const postHtml = await getPostContent(file);
     // ui 모듈을 사용해 가져온 내용을 메인 콘텐츠 영역에 렌더링합니다.
-    renderMainContent(postHtml);
+    displayContent(postHtml);
 
     // Disqus 댓글창 업데이트
-    resetDisqus(file);
+    loadDisqus(file);
 
     // 브라우저 히스토리에 상태를 추가해야 하는 경우,
     if (addToHistory) {
