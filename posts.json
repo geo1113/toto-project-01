@@ -2,44 +2,44 @@
   "posts": [
     {
       "file": "posts/post1.html",
-      "title": "분기별 주식 포트폴리오 최적화 전략",
-      "date": "2024-07-25",
+      "title": "효과적인 시간 관리 비법",
+      "date": "2026-02-18",
       "published": true
     },
     {
       "file": "posts/post2.html",
-      "title": "Gemini가 추천하는 2024년 3분기 주식",
-      "date": "2024-07-25",
+      "title": "맛있는 김치찌개 끓이는 법",
+      "date": "2026-02-18",
       "published": true
     },
     {
       "file": "posts/post3.html",
-      "title": "AI가 선정한 2024년 3분기 추천 주식 비교",
-      "date": "2024-07-25",
+      "title": "2026년 AI 기반 KOSPI 200 추천 종목 분석",
+      "date": "2026-02-18",
       "published": true
     },
     {
       "file": "posts/post3-chatgpt.html",
-      "title": "ChatGPT가 추천하는 2024년 3분기 주식",
-      "date": "2024-07-25",
+      "title": "ChatGPT의 2026년 분기별 추천 종목",
+      "date": "2026-02-18",
       "published": true
     },
     {
       "file": "posts/post3-gemini.html",
-      "title": "Gemini가 추천하는 2024년 3분기 주식 (상세)",
-      "date": "2024-07-25",
+      "title": "Gemini의 2026년 분기별 추천 종목",
+      "date": "2026-02-18",
       "published": true
     },
     {
       "file": "posts/post3-deepseek.html",
-      "title": "DeepSeek이 추천하는 2024년 3분기 주식",
-      "date": "2024-07-25",
+      "title": "DeepSeek의 2026년 분기별 추천 종목",
+      "date": "2026-02-18",
       "published": true
     },
     {
       "file": "posts/post3-common.html",
-      "title": "AI 공통 추천: 2024년 3분기 핵심 주식",
-      "date": "2024-07-25",
+      "title": "AI 공통 추천: 2026년 3분기 핵심 주식",
+      "date": "2026-02-18",
       "published": true
     }
   ]
