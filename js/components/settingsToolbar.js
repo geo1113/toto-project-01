@@ -10,12 +10,10 @@ class SettingsToolbar extends HTMLElement {
     this.shadowRoot.innerHTML = `
       <style>
         :host {
-          position: fixed;
-          top: 1.3rem;
-          left: 1rem;
           display: flex;
           gap: 0.5rem;
-          z-index: 9999;
+          padding: 1rem 0 0 2rem; /* 콘텐츠 영역에 맞게 패딩 조정 */
+          margin-bottom: 1rem; /* 아래 메인 콘텐츠와의 간격 */
         }
         .settings-btn {
             background: var(--main-bg, #fff);

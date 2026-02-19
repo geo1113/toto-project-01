@@ -1,130 +1,82 @@
-/**
- * 이 파일은 UI 관련 함수들을 포함합니다.
- * 목록 렌더링, 콘텐츠 표시, 에러 메시지 등 사용자 인터페이스와 관련된 모든 것을 담당합니다.
- */
+// 이 파일은 UI 렌더링 및 사용자 상호작용과 관련된 함수들을 포함합니다.
+// LNB 목록 생성, 검색 기능, 방문자 수 표시 등의 역할을 담당합니다.
 
-import { getSortedPosts } from './api.js';
-import { loadPost } from './router.js';
+import { incrementVisitorCount } from './api.js';
 
-/**
- * 검색창 입력에 대한 이벤트 리스너를 초기화합니다.
- * 이 함수는 DOM이 완전히 로드된 후에 호출되어야 합니다.
- */
-export function initSearch() {
-  const searchInput = document.getElementById('search-input');
-  if (searchInput) {
-    searchInput.addEventListener('input', async (e) => {
-      const query = e.target.value.toLowerCase();
-      const allPosts = await getSortedPosts();
-      const filteredPosts = allPosts.filter(p => p.title.toLowerCase().includes(query));
-      renderPostList(filteredPosts, (event, postFile) => {
-        event.preventDefault();
-        loadPost(postFile);
-      });
-    });
-  }
-}
+const postList = document.getElementById('post-list');
+const searchInput = document.getElementById('search-input');
+const mainContent = document.getElementById('main-content');
 
 /**
- * 게시물 목록(LNB)을 받아와 화면에 렌더링합니다.
- * @param {Array} posts - 렌더링할 게시물 객체의 배열
- * @param {Function} onLinkClick - 각 목록 항목의 링크를 클릭했을 때 실행될 콜백 함수
+ * 게시물 데이터를 받아 LNB(왼쪽 네비게이션 바) 목록을 생성하고 화면에 렌더링합니다.
+ * @param {Array<Object>} posts - 렌더링할 게시물 객체 배열
+ * @param {Function} onLinkClick - 각 게시물 링크 클릭 시 실행될 콜백 함수
  */
 export function renderPostList(posts, onLinkClick) {
-  const postList = document.getElementById('post-list');
-  if (!postList) return;
+  // 목록이 비어있으면 "게시물이 없습니다." 메시지를 표시합니다.
+  if (!posts || posts.length === 0) {
+    postList.innerHTML = '<li>게시물이 없습니다.</li>';
+    return;
+  }
 
-  postList.innerHTML = '';
-  posts.forEach(post => {
-    const listItem = document.createElement('li');
-    const link = document.createElement('a');
-    link.href = `#${post.file.replace('.md', '')}`;
-    const titleSpan = document.createElement('span');
-    titleSpan.className = 'post-title';
-    titleSpan.textContent = post.title;
-    const dateSpan = document.createElement('span');
-    dateSpan.className = 'post-date';
-    dateSpan.textContent = post.date;
-    link.appendChild(titleSpan);
-    link.appendChild(dateSpan);
-    link.onclick = (event) => onLinkClick(event, post.file);
-    listItem.appendChild(link);
-    postList.appendChild(listItem);
+  // 게시물 목록을 HTML 문자열로 변환합니다.
+  const postLinks = posts.map(post => `
+    <li>
+      <a href="?post=${post.file}" data-post-file="${post.file}">
+        <span class="post-title">${post.title}</span>
+        <span class="post-date">${post.date}</span>
+      </a>
+    </li>
+  `).join('');
+
+  postList.innerHTML = postLinks;
+
+  // 각 링크에 클릭 이벤트 리스너를 추가합니다.
+  postList.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', (event) => {
+      onLinkClick(event, link.dataset.postFile);
+    });
   });
 }
 
 /**
- * 주어진 HTML 콘텐츠를 메인 영역에 표시합니다.
- * @param {string} html - 표시할 HTML 문자열
+ * LNB의 검색 입력창에 대한 이벤트 리스너를 설정합니다.
+ * 입력된 검색어에 따라 게시물 목록을 실시간으로 필터링합니다.
  */
-export function displayContent(html) {
-  const mainContent = document.getElementById('main-content');
-  if (!mainContent) return;
-  mainContent.innerHTML = html;
-}
+export function initSearch() {
+  searchInput.addEventListener('input', () => {
+    const searchTerm = searchInput.value.toLowerCase();
+    const allPosts = postList.querySelectorAll('li');
 
-/**
- * 방문자 카운터를 메인 콘텐츠 영역 상단에 표시합니다.
- */
-export function displayVisitorCount() {
-  const mainContent = document.getElementById('main-content');
-  if (!mainContent) return;
-
-  const visitorCount = updateVisitorCounter();
-  const counterEl = document.createElement('div');
-  counterEl.id = 'visitor-counter';
-  counterEl.innerHTML = `👥 누적 접속자: <strong>${visitorCount.toLocaleString()}</strong>명`;
-  mainContent.prepend(counterEl);
-}
-
-/**
- * localStorage를 사용하여 방문자 수를 업데이트하고 반환합니다.
- * @returns {number} 업데이트된 방문자 수
- */
-function updateVisitorCounter() {
-  let count = parseInt(localStorage.getItem('total_visits') || '2540');
-  count += Math.floor(Math.random() * 3) + 1;
-  localStorage.setItem('total_visits', count);
-  return count;
-}
-
-/**
- * 에러 메시지를 메인 콘텐츠 영역에 표시합니다.
- * @param {string} message - 표시할 에러 메시지
- */
-export function showError(message) {
-  const mainContent = document.getElementById('main-content');
-  if (!mainContent) return;
-  mainContent.innerHTML = `<div class="error"><strong>Error:</strong> ${message}</div>`;
-}
-
-/**
- * Disqus 댓글 스레드를 로드하거나 리셋합니다.
- * @param {string} pageIdentifier - 현재 페이지의 고유 식별자
- */
-export function loadDisqus(pageIdentifier) {
-  const disqusThread = document.getElementById('disqus_thread');
-  if (!disqusThread) {
-    console.log('Disqus thread not found, skipping load.');
-    return;
-  }
-  const pageUrl = window.location.href;
-  if (window.DISQUS) {
-    DISQUS.reset({
-      reload: true,
-      config: function () {
-        this.page.url = pageUrl;
-        this.page.identifier = pageIdentifier;
-      }
+    allPosts.forEach(post => {
+      const title = post.querySelector('.post-title').textContent.toLowerCase();
+      const isVisible = title.includes(searchTerm);
+      post.style.display = isVisible ? '' : 'none';
     });
-  } else {
-    window.disqus_config = function () {
-      this.page.url = pageUrl;
-      this.page.identifier = pageIdentifier;
-    };
-    const d = document, s = d.createElement('script');
-    s.src = 'https://ai-recommended-stock.disqus.com/embed.js';
-    s.setAttribute('data-timestamp', +new Date());
-    (d.head || d.body).appendChild(s);
+  });
+}
+
+/**
+ * 특정 페이지의 방문자 수를 화면에 표시합니다.
+ * 이 함수는 방문자 수를 1 증가시키고, 업데이트된 수를 화면에 렌더링합니다.
+ * @param {string} pageId - 방문자 수를 표시할 페이지의 고유 ID (예: 'post1.html')
+ */
+export async function displayVisitorCount(pageId) {
+  if (!pageId) return; // pageId가 없으면 중단
+
+  // 이전에 표시된 카운터가 있다면 제거
+  const existingCounter = document.getElementById('visitor-counter');
+  if (existingCounter) {
+    existingCounter.remove();
+  }
+
+  // 방문자 수를 1 증가시키고 새로운 카운트를 가져옵니다.
+  const count = await incrementVisitorCount(pageId);
+
+  if (count !== null) {
+    const counterEl = document.createElement('div');
+    counterEl.id = 'visitor-counter';
+    counterEl.innerHTML = ` 누적 방문자수: <strong>${count}</strong>`;
+    mainContent.prepend(counterEl); // main-content의 가장 앞에 추가
   }
 }

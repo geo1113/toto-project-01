@@ -1,66 +1,92 @@
-// 이 모듈은 URL 변경 감지, 페이지 로딩 처리 등 라우팅 관련 기능을 담당합니다.
+// 이 파일은 클라이언트 사이드 라우팅을 관리하는 모듈입니다.
+// URL 변경을 감지하고, 그에 맞는 콘텐츠를 로드하며, 브라우저 히스토리를 관리합니다.
 
-import { getPostContent } from './api.js';
-import { displayContent, displayVisitorCount, showError, loadDisqus } from './ui.js';
+import { renderPostList, displayVisitorCount } from './ui.js';
+import { getSortedPosts } from './api.js';
+
+const mainContent = document.getElementById('main-content');
 
 /**
- * 특정 게시물을 불러와 화면에 표시하고, 브라우저 히스토리를 관리합니다.
- * @param {string} file - 불러올 게시물의 경로
- * @param {boolean} addToHistory - 이 페이지 방문을 브라우저 히스토리에 추가할지 여부
+ * 지정된 경로의 HTML 파일을 메인 콘텐츠 영역에 비동기적으로 로드합니다.
+ * 로딩 전후로 CSS 클래스를 제어하여 부드러운 전환 효과를 줍니다.
+ * @param {string} postFile - 로드할 게시물 파일 경로 (예: 'posts/post1.html')
  */
-export async function loadPost(file, addToHistory = true) {
+export async function loadPost(postFile) {
+  mainContent.classList.add('fade-out');
+
   try {
-    // 1. api 모듈을 사용해 게시물 HTML 내용을 가져옵니다.
-    const postHtml = await getPostContent(file);
-    
-    // 2. ui 모듈을 사용해 가져온 내용을 메인 콘텐츠 영역에 렌더링합니다.
-    displayContent(postHtml);
-
-    // 3. 방문자 카운터를 표시합니다.
-    displayVisitorCount();
-
-    // 4. Disqus 댓글창을 업데이트합니다.
-    loadDisqus(file);
-
-    // 5. 브라우저 히스토리에 상태를 추가해야 하는 경우,
-    if (addToHistory) {
-      // pushState를 사용하여 URL을 변경하고 히스토리 엔트리를 추가합니다.
-      history.pushState(null, '', `?post=${file}`);
+    const response = await fetch(postFile);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
+    const postHtml = await response.text();
+    mainContent.innerHTML = postHtml;
+
+    // 게시물이 성공적으로 로드된 후, 해당 게시물의 방문자 수를 표시합니다.
+    const pageId = postFile.split('/').pop(); // 파일 이름만 추출 (예: 'post1.html')
+    await displayVisitorCount(pageId);
+
+    // Disqus 댓글 스레드를 리셋합니다.
+    resetDisqus(pageId);
+
   } catch (error) {
-    // 게시물 로딩 중 에러가 발생하면 콘솔에 로그를 남기고,
-    console.error('게시물을 불러오는 데 실패했습니다.', error);
-    // 사용자에게 에러 메시지를 표시합니다.
-    showError('해당 콘텐츠를 찾을 수 없습니다.');
+    mainContent.innerHTML = `<p>게시물을 불러오는 데 실패했습니다. (경로: ${postFile})</p>`;
+    console.error(error);
+  } finally {
+    // 콘텐츠 로드 완료 후 URL을 업데이트하고 fade-in 효과를 적용합니다.
+    const url = `?post=${postFile.split('/').pop()}`;
+    history.pushState({ path: url }, '', url);
+    mainContent.classList.remove('fade-out');
   }
 }
 
 /**
- * 페이지가 처음 로드되거나 URL이 변경되었을 때 어떤 콘텐츠를 보여줄지 결정합니다.
- * @param {Array} posts - 전체 게시물 목록 배열
- */
-export function handleRouting(posts) {
-  const urlParams = new URLSearchParams(window.location.search);
-  const postFile = urlParams.get('post');
-
-  if (postFile) {
-    loadPost(postFile, false);
-  } else if (posts.length > 0) {
-    const latestPostFile = posts[0].file;
-    loadPost(latestPostFile, false);
-    history.replaceState(null, '', `?post=${latestPostFile}`);
-  }
-}
-
-/**
- * 브라우저의 뒤로가기/앞으로가기 버튼 이벤트를 처리하는 리스너를 설정합니다.
+ * 브라우저의 뒤로가기/앞으로가기 버튼에 대응하기 위한 popstate 이벤트 리스너를 설정합니다.
  */
 export function setupPopstateListener() {
-  window.addEventListener('popstate', () => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const postFile = urlParams.get('post');
-    if (postFile) {
-      loadPost(postFile, false);
-    }
+  window.addEventListener('popstate', async (event) => {
+    const allPosts = await getSortedPosts();
+    handleRouting(allPosts);
   });
+}
+
+/**
+ * 현재 URL을 분석하여 적절한 콘텐츠를 로드하는 라우팅 함수입니다.
+ * URL에 'post' 파라미터가 있으면 해당 게시물을, 없으면 최신 게시물을 로드합니다.
+ * @param {Array<Object>} allPosts - 모든 게시물 정보 배열
+ */
+export async function handleRouting(allPosts) {
+  const params = new URLSearchParams(window.location.search);
+  const postFile = params.get('post');
+
+  if (postFile) {
+    // URL에 post 파라미터가 있으면 해당 게시물을 로드합니다.
+    await loadPost(`posts/${postFile}`);
+  } else if (allPosts.length > 0) {
+    // 파라미터가 없고 게시물이 있으면 최신 게시물을 로드합니다.
+    await loadPost(`posts/${allPosts[0].file}`);
+  } else {
+    // 게시물이 없으면 환영 메시지를 표시합니다.
+    mainContent.innerHTML = '<h1>환영합니다!</h1><p>왼쪽 목록에서 게시물을 선택하세요.</p>';
+    // 홈페이지에 대한 방문자 수를 표시합니다. ID는 'home'으로 지정합니다.
+    await displayVisitorCount('home');
+  }
+}
+
+/**
+ * Disqus 댓글 시스템을 새로운 페이지에 맞게 리셋하고 다시 로드합니다.
+ * @param {string} pageIdentifier - 현재 페이지를 식별하는 고유 값 (게시물 파일명 사용)
+ */
+function resetDisqus(pageIdentifier) {
+  if (window.DISQUS) {
+    window.DISQUS.reset({
+      reload: true,
+      config: function () {
+        this.page.url = window.location.href;
+        this.page.identifier = pageIdentifier;
+      }
+    });
+  } else {
+    console.log("Disqus가 로드되지 않았습니다.")
+  }
 }
