@@ -230,7 +230,7 @@ body.dark-mode tr:nth-child(even) {
 #visitor-counter {
   position: fixed;
   top: 1.3rem;
-  right: 24rem; /* 오른쪽에서 더 멀리 떨어지도록 조정 */
+  left: 1rem; /* 왼쪽 끝으로 이동 */
   font-size: 0.85rem;
   color: var(--text-color);
   background: rgba(128, 128, 128, 0.1);
