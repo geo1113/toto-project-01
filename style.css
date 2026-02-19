@@ -6,7 +6,7 @@
   --lnb-text: #fff;
   --main-bg: #fff;
   --accent-color: #fca311;
-  --border-color: #555;
+  --border-color: #ddd; /* 약간 더 부드러운 경계선 */
   --input-bg: #444;
   --card-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -139,7 +139,7 @@ body {
   box-sizing: border-box;
 }
 
-/* 구글 번역 위젯 숨기기 */
+/* 구글 번역 위젯 숨기기 및 배너 제거 */
 #google_translate_element {
   display: none;
 }
@@ -187,18 +187,6 @@ tr:nth-child(even) {
 
 body.dark-mode tr:nth-child(even) {
   background-color: rgba(255, 255, 255, 0.05);
-}
-
-/* 접속자 수 표시 */
-#visitor-counter {
-  font-size: 0.9rem;
-  color: var(--text-color);
-  margin-bottom: 1rem; /* 제목과의 간격 */
-  font-weight: bold;
-}
-
-#visitor-counter strong {
-  color: var(--accent-color);
 }
 
 /* 데스크톱 (768px 이상) */

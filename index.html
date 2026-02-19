@@ -10,7 +10,9 @@
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=YOUR_ADSENSE_CLIENT_ID" crossorigin="anonymous"></script>
 </head>
 <body>
+  <!-- 번역 위젯이 보이지 않게 처리 -->
   <div id="google_translate_element" style="display:none;"></div>
+
   <div class="container">
     <nav class="lnb">
       <h2>꿀팁 저장소</h2>
@@ -27,7 +29,8 @@
       <div id="disqus_thread" class="disqus-container"></div>
     </div>
   </div>
-  <!-- type="module" 속성을 추가하여 이 스크립트가 ES 모듈임을 브라우저에 알립니다. -->
+
+  <!-- Disqus 스크립트 -->
   <script>
     var disqus_config = function () {
       this.page.url = window.location.origin + window.location.pathname + window.location.search;
@@ -41,6 +44,22 @@
     })();
   </script>
   <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+
+  <!-- 메인 애플리케이션 스크립트 -->
   <script type="module" src="main.js"></script>
+
+  <!-- 구글 번역 스크립트 -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'ko',
+        includedLanguages: 'en,ko',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+        autoDisplay: false
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 </body>
 </html>
