@@ -37,10 +37,34 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(data => {
-            posts = data.posts;
+            // 'published: true'인 게시물과 하위 게시물만 필터링합니다.
+            posts = data.posts
+                .filter(post => post.published)
+                .map(post => {
+                    if (post.subPosts) {
+                        post.subPosts = post.subPosts.filter(subPost => subPost.published);
+                    }
+                    return post;
+                });
+
+            // 필터링된 목록으로 LNB를 렌더링합니다.
             renderPostList(posts);
+
+            // 표시할 초기 경로를 결정합니다.
             const initialPath = window.location.hash.substring(1) || (posts.length > 0 ? posts[0].file : null);
-            if (initialPath) loadContent(initialPath);
+
+            // 경로가 유효한지(게시되었는지) 확인합니다.
+            const isPathVisible = (path) => posts.some(p => p.file === path || (p.subPosts && p.subPosts.some(sp => sp.file === path)));
+
+            if (initialPath && isPathVisible(initialPath)) {
+                loadContent(initialPath);
+            } else if (posts.length > 0) {
+                // 해시가 유효하지 않으면 첫 번째 게시물로 리디렉션합니다.
+                loadContent(posts[0].file);
+                window.location.hash = posts[0].file;
+            } else {
+                mainContent.innerHTML = '<p>게시된 포스트가 없습니다.</p>';
+            }
         })
         .catch(error => {
             console.error('Error fetching or rendering posts:', error);
@@ -57,10 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span class="post-title">${post.title}</span>
                         <span class="post-date">${post.date}</span>
                     </a>
-                    ${post.subPosts ? '<button class="toggle-sub-posts">▼</button>' : ''}
+                    ${post.subPosts && post.subPosts.length > 0 ? '<button class="toggle-sub-posts">▼</button>' : ''}
                 </div>
             `;
-            if (post.subPosts) {
+            if (post.subPosts && post.subPosts.length > 0) {
                 const subList = document.createElement('ul');
                 subList.className = 'sub-post-list';
                 subList.style.display = 'none';
@@ -85,12 +109,8 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(html => {
                 mainContent.innerHTML = html;
                 
-                // post1.html을 위한 한/영 변환기 초기화
-                if (path.includes('post1.html')) {
-                    initConverter();
-                }
+                if (path.includes('post1.html')) initConverter();
                 
-                // post4.html을 위한 환율 계산기 초기화
                 if (path.includes('posts/post4.html')) {
                     import('./exchange-rate.js')
                         .then(module => {
@@ -101,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                 }
 
-                // Disqus 리셋
                 if (window.DISQUS) {
                     DISQUS.reset({
                         reload: true,
@@ -135,8 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const toggleBtn = e.target.closest('.toggle-sub-posts');
         if (toggleBtn) {
-            const subList = toggleBtn.parentElement.nextElementSibling;
-            if (subList) {
+            const subList = toggleBtn.closest('.post-item').nextElementSibling;
+            if (subList && subList.classList.contains('sub-post-list')) {
                 const isHidden = subList.style.display === 'none';
                 subList.style.display = isHidden ? 'block' : 'none';
                 toggleBtn.textContent = isHidden ? '▲' : '▼';

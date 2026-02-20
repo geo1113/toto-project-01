@@ -10,7 +10,7 @@
       "file": "posts/post2.html",
       "title": "맛있는 김치찌개 끓이는 법",
       "date": "2026-02-18",
-      "published": true
+      "published": false
     },
     {
       "file": "posts/post3.html",
@@ -45,10 +45,10 @@
       ]
     },
     {
-        "file": "posts/post4.html",
-        "title": "이중환율계산기",
-        "date": "2026-02-19",
-        "published": true
+      "file": "posts/post4.html",
+      "title": "이중환율계산기",
+      "date": "2026-02-19",
+      "published": true
     }
   ]
 }
