@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return response.json();
         })
         .then(data => {
-            posts = data.posts; // 수정: data.posts 배열을 할당
+            posts = data.posts;
             renderPostList(posts);
             const initialPath = window.location.hash.substring(1) || (posts.length > 0 ? posts[0].file : null);
             if (initialPath) loadContent(initialPath);
@@ -84,8 +84,24 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .then(html => {
                 mainContent.innerHTML = html;
-                if (path.includes('post1.html')) initConverter();
                 
+                // post1.html을 위한 한/영 변환기 초기화
+                if (path.includes('post1.html')) {
+                    initConverter();
+                }
+                
+                // post4.html을 위한 환율 계산기 초기화
+                if (path.includes('posts/post4.html')) {
+                    import('./exchange-rate.js')
+                        .then(module => {
+                            module.initExchangeRateConverter();
+                        })
+                        .catch(err => {
+                            console.error('Failed to load exchange rate module:', err);
+                        });
+                }
+
+                // Disqus 리셋
                 if (window.DISQUS) {
                     DISQUS.reset({
                         reload: true,

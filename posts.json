@@ -43,6 +43,12 @@
           "published": true
         }
       ]
+    },
+    {
+        "file": "posts/post4.html",
+        "title": "이중환율계산기",
+        "date": "2026-02-19",
+        "published": true
     }
   ]
 }

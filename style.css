@@ -317,6 +317,146 @@ textarea:focus {
   }
 }
 
+/* --- 이중환율계산기 포스트 스타일 (posts/post4.html) --- */
+.exchange-container {
+    padding: 2rem 0;
+}
+
+.currency-converter {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr auto 1fr;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+.converter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.currency-selector {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem;
+    cursor: pointer;
+    background-color: var(--main-bg);
+    transition: border-color 0.2s;
+}
+
+.currency-selector:hover {
+    border-color: var(--accent-color);
+}
+
+.selected-currency {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas:
+        "flag code arrow"
+        "flag name arrow";
+    align-items: center;
+    gap: 0 0.5rem;
+}
+
+.selected-currency .flag-icon {
+    grid-area: flag;
+    font-size: 1.8rem;
+}
+.selected-currency .currency-code {
+    grid-area: code;
+    font-weight: bold;
+}
+.selected-currency .currency-name {
+    grid-area: name;
+    font-size: 0.75rem;
+    color: #888;
+}
+.selected-currency .arrow {
+    grid-area: arrow;
+}
+
+.currency-input {
+    font-size: 1.2rem;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    text-align: right;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.currency-input:read-only {
+    background-color: var(--bg-color);
+    opacity: 0.7;
+}
+
+.separator {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--accent-color);
+    text-align: center;
+    padding-top: 3.5rem;
+}
+
+.currency-dropdown {
+    position: absolute;
+    z-index: 1000;
+    background: var(--main-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+    max-height: 250px;
+    overflow-y: auto;
+    display: none; /* JS로 제어 */
+}
+
+.dropdown-item {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    gap: 0 0.75rem;
+}
+
+.dropdown-item:hover {
+    background-color: var(--accent-color);
+    color: black;
+}
+.dropdown-item:hover .currency-name {
+    color: #333;
+}
+
+.dropdown-item .flag-icon { font-size: 1.5rem; }
+
+.page-footer {
+    text-align: center;
+    padding: 1.5rem 0 0;
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+.post-meta {
+    font-size: 0.9em;
+    color: #888;
+    margin-bottom: 1.5rem;
+}
+
+/* 환율 계산기 반응형 */
+@media (max-width: 992px) {
+    .currency-converter {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .separator {
+        transform: rotate(90deg);
+        padding: 0;
+        margin: 1rem auto;
+    }
+}
+
 /* 데스크톱 (768px 이상) */
 @media (min-width: 768px) {
   .container {

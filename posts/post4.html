@@ -1,0 +1,41 @@
+<h1>이중환율계산기</h1>
+<p class="post-meta">게시일: 2026년 02월 19일</p>
+
+<p>실시간 환율 정보를 이용해 이중 환전을 간편하게 계산해 보세요. 기준 통화에 금액을 입력하면, 두 개의 다른 통화로 변환된 금액이 즉시 표시됩니다.</p>
+
+<div id="exchange-rate-converter" class="exchange-container">
+    <div class="currency-converter">
+        <!-- 기준 통화 -->
+        <div class="converter-group" id="group-from">
+            <div class="currency-selector" data-target="from"></div>
+            <input type="number" class="currency-input" id="amount-from" value="1000">
+        </div>
+
+        <div class="separator">→</div>
+
+        <!-- 중간 통화 -->
+        <div class="converter-group" id="group-mid">
+            <div class="currency-selector" data-target="mid"></div>
+            <input type="text" class="currency-input" id="amount-mid" readonly>
+        </div>
+
+        <div class="separator">→</div>
+
+        <!-- 대상 통화 -->
+        <div class="converter-group" id="group-to">
+            <div class="currency-selector" data-target="to"></div>
+            <input type="text" class="currency-input" id="amount-to" readonly>
+        </div>
+    </div>
+
+    <!-- 통화 선택 드롭다운 (숨겨져 있음) -->
+    <div class="currency-dropdown" style="display: none;"></div>
+
+    <footer class="page-footer">
+        <p id="last-updated">환율 정보 업데이트 중...</p>
+    </footer>
+</div>
+
+<!-- 깃발 아이콘 CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+
