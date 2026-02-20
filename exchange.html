@@ -1,0 +1,63 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>이중환율 계산기</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap">
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="index.html">한/영 변환기</a>
+        <a href="exchange.html" class="active">이중환율 계산기</a>
+    </nav>
+
+    <div class="container calculator-container">
+        <header>
+            <h1>이중환율 계산기</h1>
+            <p>기준 통화를 중간 통화로, 중간 통화를 대상 통화로 변환합니다.</p>
+        </header>
+        
+        <main class="calculator">
+            <div class="amount-wrapper">
+                <label for="amount">금액</label>
+                <input type="number" id="amount" value="1000" min="0">
+            </div>
+
+            <div class="converter-wrapper">
+                <div class="currency-group">
+                    <label for="from-currency">기준 통화</label>
+                    <select id="from-currency"></select>
+                </div>
+
+                <div class="icon-arrow">
+                    <span>→</span>
+                </div>
+
+                <div class="currency-group">
+                    <label for="mid-currency">중간 통화</label>
+                    <select id="mid-currency"></select>
+                </div>
+                
+                <div class="icon-arrow">
+                    <span>→</span>
+                </div>
+
+                <div class="currency-group">
+                    <label for="to-currency">대상 통화</label>
+                    <select id="to-currency"></select>
+                </div>
+            </div>
+
+            <div id="result-wrapper">
+                <p id="result-text">결과</p>
+                <p id="last-updated">-</p>
+            </div>
+        </main>
+    </div>
+    
+    <script type="module" src="main.js"></script>
+</body>
+</html>

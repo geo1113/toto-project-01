@@ -1,0 +1,48 @@
+{
+  "posts": [
+    {
+      "file": "posts/post1.html",
+      "title": "한/영 키보드 변환기",
+      "date": "2026-02-18",
+      "published": true
+    },
+    {
+      "file": "posts/post2.html",
+      "title": "맛있는 김치찌개 끓이는 법",
+      "date": "2026-02-18",
+      "published": true
+    },
+    {
+      "file": "posts/post3.html",
+      "title": "2026년 AI 기반 KOSPI 200 추천 종목 분석",
+      "date": "2026-02-18",
+      "published": true,
+      "subPosts": [
+        {
+          "file": "posts/post3-chatgpt.html",
+          "title": "ChatGPT의 2026년 분기별 추천 종목",
+          "date": "2026-02-18",
+          "published": true
+        },
+        {
+          "file": "posts/post3-gemini.html",
+          "title": "Gemini의 2026년 분기별 추천 종목",
+          "date": "2026-02-18",
+          "published": true
+        },
+        {
+          "file": "posts/post3-deepseek.html",
+          "title": "DeepSeek의 2026년 분기별 추천 종목",
+          "date": "2026-02-18",
+          "published": true
+        },
+        {
+          "file": "posts/post3-common.html",
+          "title": "AI 공통 추천: 2026년 3분기 핵심 주식",
+          "date": "2026-02-18",
+          "published": true
+        }
+      ]
+    }
+  ]
+}

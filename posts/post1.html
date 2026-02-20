@@ -1,0 +1,26 @@
+<article>
+    <h2>한/영 키보드 변환기</h2>
+    <p>실수로 잘못된 언어로 입력했나요? 괜찮아요. 여기에 붙여넣기만 하면 자동으로 변환해 드립니다.</p>
+
+    <div class="converter-container">
+        <div class="text-areas">
+            <div class="textarea-wrapper">
+                <textarea id="input-text" placeholder="여기에 텍스트를 입력하거나 붙여넣으세요..."></textarea>
+                <div class="text-info">
+                    <span id="input-bytes">0 Bytes</span>
+                </div>
+            </div>
+
+            <button id="swap-button" title="입력과 결과 바꾸기">↔</button>
+
+            <div class="textarea-wrapper">
+                <textarea id="output-text" readonly placeholder="변환 결과..."></textarea>
+                <div class="text-info">
+                    <span id="output-bytes">0 Bytes</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/converter.js"></script>
+</article>
