@@ -177,6 +177,22 @@ body {
     gap: 1rem; /* 아이템 사이의 간격 */
 }
 
+.header-button {
+    text-decoration: none;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+.header-button:hover {
+    background-color: var(--accent-color);
+    color: #000;
+    border-color: var(--accent-color);
+}
+
 #visitor-counter {
     font-size: 0.9rem;
     color: var(--text-color);

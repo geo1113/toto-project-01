@@ -28,16 +28,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (callback) script.onload = callback;
     }
 
-    // 3. 방문자 카운터 업데이트
+    // 3. 방문자 카운터 업데이트 (한국어 및 숫자 서식 적용)
     function updateVisitorCount() {
         fetch('https://api.countapi.xyz/hit/toto-project-01/visits')
             .then(res => res.json())
             .then(data => {
-                visitorCounter.textContent = `Total Visits: ${data.value}`;
+                visitorCounter.textContent = `누적 방문자수: ${data.value.toLocaleString()}`;
             })
             .catch(error => {
                 console.error('Error fetching visitor count:', error);
-                visitorCounter.textContent = 'Visits: N/A';
+                visitorCounter.textContent = '방문자수: N/A';
             });
     }
 
