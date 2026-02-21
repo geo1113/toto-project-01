@@ -171,8 +171,15 @@ body {
 .main-header {
     display: flex;
     justify-content: flex-end;
+    align-items: center; /* 아이템들을 세로 중앙으로 정렬 */
     padding: 1rem 2rem;
     background: var(--main-bg);
+    gap: 1rem; /* 아이템 사이의 간격 */
+}
+
+#visitor-counter {
+    font-size: 0.9rem;
+    color: var(--text-color);
 }
 
 #theme-toggle {

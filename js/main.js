@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const mainContent = document.getElementById('main-content');
     const searchInput = document.getElementById('search-input');
     const themeToggleButton = document.getElementById('theme-toggle');
+    const visitorCounter = document.getElementById('visitor-counter');
 
     let posts = [];
 
@@ -27,10 +28,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (callback) script.onload = callback;
     }
 
+    // 3. 방문자 카운터 업데이트
+    function updateVisitorCount() {
+        fetch('https://api.countapi.xyz/hit/toto-project-01/visits')
+            .then(res => res.json())
+            .then(data => {
+                visitorCounter.textContent = `Total Visits: ${data.value}`;
+            })
+            .catch(error => {
+                console.error('Error fetching visitor count:', error);
+                visitorCounter.textContent = 'Visits: N/A';
+            });
+    }
+
     loadDynamicScript('https://toto-project-01.disqus.com/embed.js', 'disqus-embed-script');
     loadDynamicScript('//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit', 'google-translate-script');
+    updateVisitorCount();
 
-    // 3. 게시물 목록 로드 및 LNB 생성
+    // 4. 게시물 목록 로드 및 LNB 생성
     fetch('posts.json') 
         .then(response => {
             if (!response.ok) throw new Error('posts.json not found');
@@ -47,19 +62,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     return post;
                 });
 
-            // 필터링된 목록으로 LNB를 렌더링합니다.
             renderPostList(posts);
 
-            // 표시할 초기 경로를 결정합니다.
             const initialPath = window.location.hash.substring(1) || (posts.length > 0 ? posts[0].file : null);
-
-            // 경로가 유효한지(게시되었는지) 확인합니다.
             const isPathVisible = (path) => posts.some(p => p.file === path || (p.subPosts && p.subPosts.some(sp => sp.file === path)));
 
             if (initialPath && isPathVisible(initialPath)) {
                 loadContent(initialPath);
             } else if (posts.length > 0) {
-                // 해시가 유효하지 않으면 첫 번째 게시물로 리디렉션합니다.
                 loadContent(posts[0].file);
                 window.location.hash = posts[0].file;
             } else {
@@ -99,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 4. 콘텐츠 로드
+    // 5. 콘텐츠 로드
     function loadContent(path) {
         fetch(path)
             .then(response => {
@@ -137,13 +147,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
     }
 
-    // 5. URL 변경 감지 (뒤로/앞으로 가기)
+    // 6. URL 변경 감지 (뒤로/앞으로 가기)
     window.addEventListener('hashchange', () => {
         const path = window.location.hash.substring(1);
         if(path) loadContent(path);
     });
     
-    // 6. 이벤트 위임 (LNB 클릭)
+    // 7. 이벤트 위임 (LNB 클릭)
     postList.addEventListener('click', (e) => {
         const link = e.target.closest('.post-link');
         if (link) {
@@ -163,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 7. 검색
+    // 8. 검색
     searchInput.addEventListener('input', (e) => {
         const searchTerm = e.target.value.toLowerCase();
         const filteredPosts = posts.filter(post => {
@@ -174,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
         renderPostList(filteredPosts);
     });
 
-    // 8. 테마 토글
+    // 9. 테마 토글
     themeToggleButton.addEventListener('click', () => {
         document.body.classList.toggle('dark-mode');
         const isDarkMode = document.body.classList.contains('dark-mode');
