@@ -28,17 +28,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (callback) script.onload = callback;
     }
 
-    // 3. 방문자 카운터 업데이트 (안정적인 fncount.com API로 변경)
+    // 3. 방문자 카운터 업데이트 (새로운 API로 교체 및 안정성 확보)
     function updateVisitorCount() {
-        fetch('https://api.fncount.com/count?id=toto-project-01-visits')
+        fetch('https://visits.robertcooper.me/api/v1/visits/toto-project-01')
             .then(res => res.json())
             .then(data => {
-                // 새로운 API는 'count' 필드를 사용합니다.
-                visitorCounter.textContent = `누적 방문자수: ${data.count.toLocaleString()}`;
+                // 새로운 API는 'visits' 필드를 사용합니다.
+                visitorCounter.textContent = `누적 방문자수: ${data.visits.toLocaleString()}`;
             })
             .catch(error => {
                 console.error('Error fetching visitor count:', error);
-                visitorCounter.textContent = '방문자수: N/A';
+                // 텍스트 일관성 유지
+                visitorCounter.textContent = '누적 방문자수: N/A';
             });
     }
 
